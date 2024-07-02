@@ -35,6 +35,27 @@ class UsersController {
                 userQueue.add({ userId: result.insertedId });
               }).catch((error) => console.log(error));
             }
+        });
+    }
+
+    static async getMe(req, res) {
+        const token = req.header('X-Token');
+        const key = `auth_${token}`;
+        const userId = await redisClient.get(key);
+        if (userId) {
+          const users = dbClient.db.collection('users');
+          const idObject = new ObjectID(userId);
+          users.findOne({ _id: idObject }, (err, user) => {
+            if (user) {
+              response.status(200).json({ id: userId, email: user.email });
+            } else {
+              res.status(401).json({ error: 'Unauthorized' });
+            }
           });
+        } else {
+          console.log('Not Found!');
+          response.status(401).json({ error: 'Unauthorized' });
         }
     }
+}
+module.exports = UsersController;
