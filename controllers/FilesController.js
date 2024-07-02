@@ -17,7 +17,7 @@ const FOLDER_PATH = process.env.FOLDER_PATH || '/tmp/files_manager';
 // Valid file types
 const VALID_TYPES = ['folder', 'file', 'image'];
 
-// GET /files
+// POST /files
 exports.createFile = (req, res) => {
   const { token } = req.headers;
   if (!token) {
